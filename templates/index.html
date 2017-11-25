@@ -1,0 +1,48 @@
+<html>
+    <header>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>te.dog</title>
+        <style>
+            #container {
+                text-align: center;
+                color: #98B1E7;
+                padding-top: 10em;
+            }
+            #content {
+
+            }
+            a {
+                color: #98B1E7;
+                text-decoration: underline;
+            }
+            #footer {
+                font-size: 0.8em;
+                margin-top: 10em;
+                margin-bottom: 10em;
+            }
+        </style>
+    </header>
+    <body>
+        <div id="container">
+            <h1>Blog</h1>
+            <div id="content">
+                {% if type(content) == list %}
+                {% for content_item in content %}
+                    {% if not re.match('^\_|^\.', content_item['name']) %}
+                    <p>
+                        <a href="/{{content_item['path']}}">
+                            {{content_item['name']}} [{{content_item['type']}}]
+                        </a>
+                    </p>
+                    {% endif %}
+                {% endfor %}
+                {% else %}
+                <p>{{content['content']}}</p>
+                {% endif %}
+            </div>
+            <p id="footer">
+                &lt;te.dog /&gt;
+            </p>
+        </div>
+    </body>
+</html>
