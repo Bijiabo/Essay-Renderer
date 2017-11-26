@@ -19,8 +19,13 @@ branch = environ.get('branch', 'master')
 token = environ.get('token', '')
 headers = {'Authorization': 'token {token}'.format(token=token)}
 
+def base64encode(content):
+    return base64.b64encode(content.encode('utf-8')).decode("utf-8")
+
 @app.route('/<regex(".*"):path>')
 def index(path=''):
+    # return render_template('debug.html', content=path)
+    path = base64.b64decode(path.encode('utf-8')).decode('utf-8')
     request_url = 'https://api.github.com/repos/{owner}/{repo}/contents/{path}?ref={branch}'.format(owner=owner, repo=repo, branch=branch, path=path)
     print(request_url)
     request_result = requests.get(request_url, headers=headers)
@@ -36,7 +41,7 @@ def index(path=''):
         request_result = requests.get(request_url, headers=headers)
         print(request_result.json())
         content['commit_info'] = request_result.json()[0]
-    return render_template('index.html', content=content, re=re, type=type, list=list)
+    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=base64encode)
 
 @app.route('/demo')
 def demo():

@@ -42,25 +42,7 @@
         <div id="container">
             <h1><a href="/">Blog</a></h1>
             <div id="content">
-                {% if type(content) == list %}
-                {% for content_item in content %}
-                    {% if not re.match('^\_|^\.', content_item['name']) %}
-                    <p class="folder_link">
-                        <a href="/{{base64encode(content_item['path'])}}">
-                            {{content_item['name']}} [{{content_item['type']}}]
-                        </a>
-                    </p>
-                    {% endif %}
-                {% endfor %}
-                {% else %}
-                {{content['content'] | safe}}
-                <hr>
-                <div class="content-info">
-                    <p>Author: {{content['commit_info']['commit']['author']['name']}}</p>
-                    <p>Edit message: {{content['commit_info']['commit']['message']}}</p>
-                    <p>Last modified: {{content['commit_info']['commit']['author']['date']}}</p>
-                </div>
-                {% endif %}
+                {{content}}
             </div>
             <p id="footer">
                 &lt;te.dog /&gt;
