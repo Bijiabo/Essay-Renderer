@@ -53,7 +53,13 @@
                     {% endif %}
                 {% endfor %}
                 {% else %}
-                <p>{{content['content'] | safe}}</p>
+                {{content['content'] | safe}}
+                <hr>
+                <div class="content-info">
+                    <p>Author: {{content['commit_info']['commit']['author']['name']}}</p>
+                    <p>Edit message: {{content['commit_info']['commit']['message']}}</p>
+                    <p>Last modified: {{content['commit_info']['commit']['author']['date']}}</p>
+                </div>
                 {% endif %}
             </div>
             <p id="footer">
