@@ -9,7 +9,7 @@
                 padding-top: 10em;
             }
             #content {
-
+                padding: 2em;
             }
             h1 {
                 text-align: center;
@@ -21,16 +21,26 @@
                 color: #98B1E7;
                 text-decoration: underline;
             }
+            hr {
+                border-top: 1px dashed #98B1E7;
+                border-bottom: 1px dashed #fff;
+            }
+            pre {
+                padding: 1em;
+                border: 1px solid #98B1E7;
+                border-radius: 0.3em;
+            }
             #footer {
                 font-size: 0.8em;
                 margin-top: 10em;
                 margin-bottom: 10em;
+                text-align: center;
             }
         </style>
     </header>
     <body>
         <div id="container">
-            <h1>Blog</h1>
+            <h1><a href="/">Blog</a></h1>
             <div id="content">
                 {% if type(content) == list %}
                 {% for content_item in content %}
