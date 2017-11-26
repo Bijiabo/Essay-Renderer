@@ -4,12 +4,18 @@
         <title>te.dog</title>
         <style>
             #container {
-                text-align: center;
+                /* text-align: center; */
                 color: #98B1E7;
                 padding-top: 10em;
             }
             #content {
 
+            }
+            h1 {
+                text-align: center;
+            }
+            .folder_link {
+                text-align: center;
             }
             a {
                 color: #98B1E7;
@@ -29,7 +35,7 @@
                 {% if type(content) == list %}
                 {% for content_item in content %}
                     {% if not re.match('^\_|^\.', content_item['name']) %}
-                    <p>
+                    <p class="folder_link">
                         <a href="/{{content_item['path']}}">
                             {{content_item['name']}} [{{content_item['type']}}]
                         </a>
@@ -37,7 +43,7 @@
                     {% endif %}
                 {% endfor %}
                 {% else %}
-                <p>{{content['content']}}</p>
+                <p>{{content['content'] | safe}}</p>
                 {% endif %}
             </div>
             <p id="footer">

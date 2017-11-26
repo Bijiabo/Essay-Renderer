@@ -2,6 +2,7 @@ from flask import Flask, request, session, redirect, url_for, render_template
 import requests
 import re
 import base64
+import mistune
 from werkzeug.routing import BaseConverter
 class RegexConverter(BaseConverter):
     def __init__(self, map, *args):
@@ -26,7 +27,8 @@ def index(path=''):
     content = request_result.json()
     content_is_list = type(content) == list
     if not content_is_list:
-        content['content'] = base64.b64decode(content['content']).decode('utf-8')
+        content_markdown_string = base64.b64decode(content['content']).decode('utf-8')
+        content['content'] = mistune.markdown(content_markdown_string)
     return render_template('index.html', content=content, re=re, type=type, list=list)
 
 @app.route('/demo')
