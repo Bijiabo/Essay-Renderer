@@ -13,6 +13,7 @@ class RegexConverter(BaseConverter):
 app = Flask(__name__)
 app.url_map.converters['regex'] = RegexConverter
 
+blog_name = environ.get('blog_name', 'Blog')
 owner = environ.get('owner', 'owner')
 repo = environ.get('repo', 'blog.te.dog')
 branch = environ.get('branch', 'master')
@@ -41,7 +42,7 @@ def index(path=''):
         request_result = requests.get(request_url, headers=headers)
         print(request_result.json())
         content['commit_info'] = request_result.json()[0]
-    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=base64encode)
+    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=base64encode, blog_name=blog_name)
 
 @app.route('/demo')
 def demo():

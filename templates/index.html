@@ -1,7 +1,7 @@
 <html>
     <header>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>te.dog</title>
+        <title>{{blog_name}}</title>
         <style>
             #container {
                 /* text-align: center; */
@@ -40,7 +40,7 @@
     </header>
     <body>
         <div id="container">
-            <h1><a href="/">Blog</a></h1>
+            <h1><a href="/">{{blog_name}}</a></h1>
             <div id="content">
                 {% if type(content) == list %}
                 {% for content_item in content %}
