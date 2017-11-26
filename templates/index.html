@@ -1,70 +1,83 @@
 <html>
-    <header>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>{{blog_name}}</title>
-        <style>
-            #container {
-                /* text-align: center; */
-                color: #98B1E7;
-                padding-top: 10em;
-            }
-            #content {
-                padding: 2em;
-            }
-            h1 {
-                text-align: center;
-            }
-            .folder_link {
-                text-align: center;
-            }
-            a {
-                color: #98B1E7;
-                text-decoration: underline;
-            }
-            hr {
-                border-top: 1px dashed #98B1E7;
-                border-bottom: 1px dashed #fff;
-            }
-            pre {
-                padding: 1em;
-                border: 1px solid #98B1E7;
-                border-radius: 0.3em;
-            }
-            #footer {
-                font-size: 0.8em;
-                margin-top: 10em;
-                margin-bottom: 10em;
-                text-align: center;
-            }
-        </style>
-    </header>
-    <body>
-        <div id="container">
-            <h1><a href="/">{{blog_name}}</a></h1>
-            <div id="content">
-                {% if type(content) == list %}
-                {% for content_item in content %}
-                    {% if not re.match('^\_|^\.', content_item['name']) %}
-                    <p class="folder_link">
-                        <a href="/{{base64encode(content_item['path'])}}">
-                            {{content_item['name']}} [{{content_item['type']}}]
-                        </a>
-                    </p>
-                    {% endif %}
-                {% endfor %}
-                {% else %}
-                {{content['content'] | safe}}
-                <hr>
-                <div class="content-info">
-                    <p>Author: {{content['commit_info']['commit']['author']['name']}}</p>
-                    <p>Edit message: {{content['commit_info']['commit']['message']}}</p>
-                    <p>Last modified: {{content['commit_info']['commit']['author']['date']}}</p>
-                </div>
-                {% endif %}
+<header>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{{blog_name}}</title>
+    <style>
+        #container {
+            /* text-align: center; */
+            color: #98B1E7;
+            padding-top: 10em;
+        }
+
+        #content {
+            padding: 2em;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .folder_link {
+            text-align: center;
+        }
+
+        a {
+            color: #98B1E7;
+            text-decoration: underline;
+        }
+
+        hr {
+            border-top: 1px dashed #98B1E7;
+            border-bottom: 1px dashed #fff;
+        }
+
+        pre {
+            padding: 1em;
+            border: 1px solid #98B1E7;
+            border-radius: 0.3em;
+        }
+
+        #footer {
+            font-size: 0.8em;
+            margin-top: 10em;
+            margin-bottom: 10em;
+            text-align: center;
+        }
+
+        .statistics-code {
+            display: none;
+        }
+    </style>
+</header>
+
+<body>
+    <div id="container">
+        <h1>
+            <a href="/">{{blog_name}}</a>
+        </h1>
+        <div id="content">
+            {% if type(content) == list %} {% for content_item in content %} {% if not re.match('^\_|^\.', content_item['name']) %}
+            <p class="folder_link">
+                <a href="/{{base64encode(content_item['path'])}}">
+                    {{content_item['name']}} [{{content_item['type']}}]
+                </a>
+            </p>
+            {% endif %} {% endfor %} {% else %} {{content['content'] | safe}}
+            <hr>
+            <div class="content-info">
+                <p>Author: {{content['commit_info']['commit']['author']['name']}}</p>
+                <p>Edit message: {{content['commit_info']['commit']['message']}}</p>
+                <p>Last modified: {{content['commit_info']['commit']['author']['date']}}</p>
             </div>
-            <p id="footer">
+            {% endif %}
+        </div>
+        <div id="footer">
+            <p>
                 &lt;te.dog /&gt;
             </p>
+            <div class="statistics-code">{{statistics_code | safe}}</div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

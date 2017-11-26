@@ -13,6 +13,7 @@ class RegexConverter(BaseConverter):
 app = Flask(__name__)
 app.url_map.converters['regex'] = RegexConverter
 
+statistics_code = environ.get('statistics_code', '')
 blog_name = environ.get('blog_name', 'Blog')
 owner = environ.get('owner', 'owner')
 repo = environ.get('repo', 'blog.te.dog')
@@ -25,7 +26,8 @@ def base64encode(content):
 
 @app.route('/<regex(".*"):path>')
 def index(path=''):
-    # return render_template('debug.html', content=path)
+    if path == '+':
+        path = ''
     path = base64.b64decode(path.encode('utf-8')).decode('utf-8')
     request_url = 'https://api.github.com/repos/{owner}/{repo}/contents/{path}?ref={branch}'.format(owner=owner, repo=repo, branch=branch, path=path)
     print(request_url)
@@ -42,11 +44,11 @@ def index(path=''):
         request_result = requests.get(request_url, headers=headers)
         print(request_result.json())
         content['commit_info'] = request_result.json()[0]
-    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=base64encode, blog_name=blog_name)
+    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=base64encode, blog_name=blog_name, statistics_code=statistics_code)
 
 @app.route('/demo')
 def demo():
-    return render_template('index.html', content='hello,world', type=type, list=list)
+    return render_template('index.html', content='hello,world', type=type, list=list, statistics_code=statistics_code)
 
 if __name__ == '__main__':
     app.run(debug=True)
