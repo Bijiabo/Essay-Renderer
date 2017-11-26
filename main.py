@@ -10,7 +10,7 @@ class RegexConverter(BaseConverter):
         self.map = map
         self.regex = args[0]
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.url_map.converters['regex'] = RegexConverter
 
 statistics_code = environ.get('statistics_code', '')
@@ -37,6 +37,15 @@ def index(path=''):
     content_is_list = type(content) == list
     if not content_is_list:
         content_markdown_string = base64.b64decode(content['content']).decode('utf-8')
+        content['original_content'] = content_markdown_string
+        # 处理 markdown 中的图片
+        def test(matched):
+            image_markdown_str = str(matched.group('value'))
+            image_file_path = re.sub(r'\!\[\]\(|\)|\!\[Image\]\(', '', image_markdown_str)
+            image_file_uri = 'https://raw.githubusercontent.com/{user}/{repo}/{branch}/{filename}'.format(user=owner, repo=repo,branch=branch,filename=image_file_path)
+            return '![](' + image_file_uri + ')'
+        content_markdown_string = re.sub('(?P<value>\!\[\]\(.+\)|\!\[Image\]\(.+\))', test, content_markdown_string)
+        # 解析 markdown 为 html
         content['content'] = mistune.markdown(content_markdown_string)
         # get lastest commit information
         request_url = 'https://api.github.com/repos/{owner}/{repo}/commits?path={path}&ref={branch}'.format(owner=owner, repo=repo, branch=branch, path=path)
