@@ -26,6 +26,7 @@ def base64encode(content):
 
 @app.route('/<regex(".*"):path>')
 def index(path=''):
+    title = blog_name
     if path == '+':
         path = ''
     path = base64.b64decode(path.encode('utf-8')).decode('utf-8')
@@ -35,7 +36,9 @@ def index(path=''):
     print(request_result.json())
     content = request_result.json()
     content_is_list = type(content) == list
+
     if not content_is_list:
+        title = re.sub(r'\.md$|\.txt$|^.+\/', '', path)
         content_markdown_string = base64.b64decode(content['content']).decode('utf-8')
         content['original_content'] = content_markdown_string
         # 处理 markdown 中的图片
@@ -53,7 +56,8 @@ def index(path=''):
         request_result = requests.get(request_url, headers=headers)
         print(request_result.json())
         content['commit_info'] = request_result.json()[0]
-    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=base64encode, blog_name=blog_name, statistics_code=statistics_code)
+
+    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=base64encode, blog_name=blog_name, statistics_code=statistics_code, title=title)
 
 @app.route('/demo')
 def demo():

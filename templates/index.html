@@ -1,7 +1,7 @@
 <html>
 <header>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>{{blog_name}}</title>
+    <title>{{ blog_name if title==blog_name else title + ' - ' + blog_name}}</title>
     <style>
         #container {
             /* text-align: center; */
@@ -11,6 +11,9 @@
 
         #content {
             padding: 2em;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         h1 {
@@ -35,6 +38,7 @@
             padding: 1em;
             border: 1px solid #98B1E7;
             border-radius: 0.3em;
+            overflow-x: scroll;
         }
 
         #footer {
@@ -47,14 +51,28 @@
         .statistics-code {
             display: none;
         }
+
+        .text_center {
+            text-align: center;
+        }
     </style>
 </header>
 
 <body>
     <div id="container">
+
+        {% if title==blog_name %}
         <h1>
             <a href="/">{{blog_name}}</a>
         </h1>
+        {% else %}
+        <h1>
+            {{title}}
+        </h1>
+        <p class="text_center">
+            <a href="/">{{blog_name}}</a>
+        </p>
+        {% endif %}
         <div id="content">
             {% if type(content) == list %} {% for content_item in content %} {% if not re.match('^\_|^\.', content_item['name']) %}
             <p class="folder_link">
