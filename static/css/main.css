@@ -19,9 +19,6 @@
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
-    border-left: 2px solid #E6E6E6;
-    border-right: 2px solid #E6E6E6;
-    border-radius: 6px;
 }
 
 h1 {
@@ -29,17 +26,13 @@ h1 {
 }
 
 #content .ui.selection.list>.item.folder_link {
-    /* text-align: center; */
     padding: 0 1em;
+    border-bottom: 1px solid #eaeaea;
+    border-radius: 0;
 }
 #content .ui.selection.list>.item.folder_link .content {
     padding: 0.5em;
 }
-
-/* a {
-    color: #98B1E7;
-    text-decoration: underline;
-} */
 
 hr {
     border-top: 1px dashed #E5E5E5;
@@ -58,6 +51,7 @@ pre {
     margin-top: 10em;
     margin-bottom: 10em;
     text-align: center;
+    color: #cccccc;
 }
 
 .statistics-code {
