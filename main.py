@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# #coding:utf-8
 from flask import Flask, request, session, redirect, url_for, render_template
 import requests
 import re
@@ -37,6 +39,11 @@ def index(path=''):
     print(request_result.json())
     content = request_result.json()
     content_is_list = type(content) == list
+
+    # 判断是否为报错信息
+    if not content_is_list:
+        if 'message' in content:
+            return render_template('debug.html', content=content['message'])
 
     if not content_is_list:
         title = re.sub(r'\.md$|\.txt$|^.+\/', '', path)
