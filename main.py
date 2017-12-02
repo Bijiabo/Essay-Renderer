@@ -14,6 +14,7 @@ class RegexConverter(BaseConverter):
 
 from helper import Helper
 helper = Helper()
+from data_types.template_render_data import Template_Render_Data
 
 app = Flask(__name__, static_url_path='/static')
 app.url_map.converters['regex'] = RegexConverter
@@ -27,16 +28,25 @@ branch = environ.get('branch', 'master')
 token = environ.get('token', '')
 headers = {'Authorization': 'token {token}'.format(token=token)}
 
+@app.route('/favicon.ico')
+def facicon():
+    return ''
+
 @app.route('/<regex(".*"):path>')
 def index(path=''):
-    title = blog_name
+    template_render_data = Template_Render_Data()
     if path == '+':
         path = ''
+    
+    # print('parent path:' + helper.path__parent_path(path))
     path = helper.base64_decode_for_string(path)
+    template_render_data.path = path
+    template_render_data.title = blog_name
+
     request_url = 'https://api.github.com/repos/{owner}/{repo}/contents/{path}?ref={branch}'.format(owner=owner, repo=repo, branch=branch, path=path)
     print(request_url)
     request_result = requests.get(request_url, headers=headers)
-    print(request_result.json())
+    # print(request_result.json())
     content = request_result.json()
     content_is_list = type(content) == list
 
@@ -46,7 +56,7 @@ def index(path=''):
             return render_template('debug.html', content=content['message'])
 
     if not content_is_list:
-        title = re.sub(r'\.md$|\.txt$|^.+\/', '', path)
+        template_render_data.title = re.sub(r'\.md$|\.txt$|^.+\/', '', path)
         content_markdown_string = base64.b64decode(content['content']).decode('utf-8')
         content['original_content'] = content_markdown_string
         # 处理 markdown 中的图片
@@ -60,12 +70,12 @@ def index(path=''):
         content['content'] = mistune.markdown(content_markdown_string)
         # get lastest commit information
         request_url = 'https://api.github.com/repos/{owner}/{repo}/commits?path={path}&ref={branch}'.format(owner=owner, repo=repo, branch=branch, path=path)
-        print(request_url)
+        # print(request_url)
         request_result = requests.get(request_url, headers=headers)
-        print(request_result.json())
+        # print(request_result.json())
         content['commit_info'] = request_result.json()[0]
 
-    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=helper.base64_encode_for_string, blog_name=blog_name, statistics_code=statistics_code, title=title)
+    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=helper.base64_encode_for_string, blog_name=blog_name, statistics_code=statistics_code, template_render_data=template_render_data)
 
 @app.route('/demo')
 def demo():

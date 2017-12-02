@@ -1,5 +1,6 @@
 from os import environ
 from api import api
+from data_types.template_render_data import Template_Render_Data
 
 # setup environment variable
 class Assistant:
@@ -34,3 +35,14 @@ if __name__ == '__main__':
     assistant.setupEnvironmentVarible()
     api.reloadConfig()
     api.get_content_for_path('hello')
+
+    data = Template_Render_Data()
+    print(data.data)
+    data.path = 'a/b/c'
+    print(data.data)
+    data.path = 'a/b/c/d'
+    print(data.data)
+    data.path = 'a'
+    print(data.data)
+    data.path = ''
+    print(data.data)
