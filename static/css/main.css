@@ -1,3 +1,8 @@
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 #container {
     /* text-align: center; */
     /* color: #98B1E7; */
