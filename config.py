@@ -10,6 +10,7 @@ class _Config:
 
     def __init__(self):
         print('Config init.')
+        self.load()
 
     def load(self):
         self.statistics_code = environ.get('statistics_code', '')
@@ -28,6 +29,10 @@ class _Config:
             "branch": self.branch,
             "token": self.token
         }
+
+    @property
+    def headers(self):
+        return {'Authorization': 'token {token}'.format(token=self.token)}
 
     
 config = _Config()

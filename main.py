@@ -5,6 +5,7 @@ import requests
 import re
 import base64
 import mistune
+import urllib.parse
 from os import environ
 from werkzeug.routing import BaseConverter
 class RegexConverter(BaseConverter):
@@ -15,6 +16,7 @@ class RegexConverter(BaseConverter):
 from helper import Helper
 helper = Helper()
 from data_types.template_render_data import Template_Render_Data
+from api import api
 
 app = Flask(__name__, static_url_path='/static')
 app.url_map.converters['regex'] = RegexConverter
@@ -39,43 +41,38 @@ def index(path=''):
         path = ''
     
     # print('parent path:' + helper.path__parent_path(path))
-    path = helper.base64_decode_for_string(path)
+    path = urllib.parse.unquote(path)
     template_render_data.path = path
     template_render_data.title = blog_name
 
-    request_url = 'https://api.github.com/repos/{owner}/{repo}/contents/{path}?ref={branch}'.format(owner=owner, repo=repo, branch=branch, path=path)
-    print(request_url)
-    request_result = requests.get(request_url, headers=headers)
-    # print(request_result.json())
-    content = request_result.json()
-    content_is_list = type(content) == list
+    # 获取主要内容
+    content = api.get_content_for_path(path).json()
+    template_render_data.is_list = type(content) == list
 
     # 判断是否为报错信息
-    if not content_is_list:
+    if not template_render_data.is_list:
         if 'message' in content:
-            return render_template('debug.html', content=content['message'])
+            return render_template('debug.html', content=content['message'], template_render_data=template_render_data)
 
-    if not content_is_list:
+    if template_render_data.is_list:
+        content = helper.path__filter_hidden_path(content)
+    else:
         template_render_data.title = re.sub(r'\.md$|\.txt$|^.+\/', '', path)
         content_markdown_string = base64.b64decode(content['content']).decode('utf-8')
         content['original_content'] = content_markdown_string
         # 处理 markdown 中的图片
-        def test(matched):
+        def process_image_url(matched):
             image_markdown_str = str(matched.group('value'))
             image_file_path = re.sub(r'\!\[\]\(|\)|\!\[Image\]\(', '', image_markdown_str)
-            image_file_uri = 'https://raw.githubusercontent.com/{user}/{repo}/{branch}/{filename}'.format(user=owner, repo=repo,branch=branch,filename=image_file_path)
+            image_file_uri = helper.path__raw_path(template_render_data.parent_path, image_file_path)
             return '![](' + image_file_uri + ')'
-        content_markdown_string = re.sub('(?P<value>\!\[\]\(.+\)|\!\[Image\]\(.+\))', test, content_markdown_string)
+        content_markdown_string = re.sub('(?P<value>\!\[\]\(.+\)|\!\[Image\]\(.+\))', process_image_url, content_markdown_string)
         # 解析 markdown 为 html
         content['content'] = mistune.markdown(content_markdown_string)
         # get lastest commit information
-        request_url = 'https://api.github.com/repos/{owner}/{repo}/commits?path={path}&ref={branch}'.format(owner=owner, repo=repo, branch=branch, path=path)
-        # print(request_url)
-        request_result = requests.get(request_url, headers=headers)
-        # print(request_result.json())
-        content['commit_info'] = request_result.json()[0]
-
-    return render_template('index.html', content=content, re=re, type=type, list=list, base64encode=helper.base64_encode_for_string, blog_name=blog_name, statistics_code=statistics_code, template_render_data=template_render_data)
+        content['commit_info'] = api.get_commit_info_for_path(path).json()[0]
+    
+    return render_template('index.html', content=content, template_render_data=template_render_data)
 
 @app.route('/demo')
 def demo():

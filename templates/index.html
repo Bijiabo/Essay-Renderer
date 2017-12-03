@@ -1,55 +1,52 @@
 <html>
 <header>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>{{ blog_name if template_render_data.title==blog_name else template_render_data.title + ' - ' + blog_name}}</title>
+    <title>{{ template_render_data.config.blog_name if template_render_data.title==template_render_data.config.blog_name else template_render_data.title + ' - ' + template_render_data.config.blog_name}}</title>
     <link rel="stylesheet" href="/static/css/semantic.min.css">
     <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="/static/js/semantic.min.js"></script>
 </header>
 
 <body>
     <div id="container">
-        {% if title==blog_name %}
+        {% if title==template_render_data.config.blog_name %}
         <h1>
-            <a href="/">{{blog_name}}</a>
+            <a href="/">{{template_render_data.config.blog_name}}</a>
         </h1>
         {% else %}
         <h1>
             {{template_render_data.title}}
         </h1>
         <p class="text_center">
-            <a href="/">{{blog_name}}</a>
+            <a href="/">{{template_render_data.config.blog_name}}</a>
         </p>
         {% endif %}
         <div id="content">
-            {% if type(content) == list %} 
+            {% if template_render_data.is_list %}
             <div class="ui middle aligned selection list">
-            {% for content_item in content %} 
-                {% if not re.match('^\_|^\.', content_item['name']) %}
-                    <div class="item folder_link">
-                        <a href="/{{base64encode(content_item['path'])}}">
+                {% for content_item in content %}
+                <div class="item folder_link">
+                    <a href="/{{content_item['path']}}">
                         <div class="content">
                             <div class="header">
                                 <i class="{{'folder' if content_item['type']=='dir' else 'file text'}} outline icon"></i>
                                 {{content_item['name']}}
                             </div>
                         </div>
-                        </a>
-                    </div>
-                {% endif %} 
-            {% endfor %} 
+                    </a>
+                </div>
+                {% endfor %}
             </div>
-            {% else %} 
-            
-            {{content['content'] | safe}}
-            
+            {% else %} {{content['content'] | safe}}
+
             <div class="content-info">
                 <div class="ui horizontal divider">Content Info</div>
                 <p>Author: {{content['commit_info']['commit']['author']['name']}}</p>
                 <p>Edit message: {{content['commit_info']['commit']['message']}}</p>
                 <p>Last modified: {{content['commit_info']['commit']['author']['date']}}</p>
             </div>
-            
+
             <!-- {{content['original_content']}} -->
             {% endif %}
         </div>
@@ -59,7 +56,7 @@
             </p>
             <p>{{template_render_data.path}}</p>
             <p>{{template_render_data.parent_path}}</p>
-            <div class="statistics-code">{{statistics_code | safe}}</div>
+            <div class="statistics-code">{{template_render_data.config.statistics_code | safe}}</div>
         </div>
     </div>
 </body>

@@ -1,4 +1,5 @@
 from helper import Helper
+from config import config
 helper = Helper()
 
 class Template_Render_Data:
@@ -6,6 +7,8 @@ class Template_Render_Data:
     parent_path = ''
     title = ''
     content = ''
+    is_list = True
+    config = config.dict_of_all()
 
     def __init__(self):
         print('init Template_Render_Data')
