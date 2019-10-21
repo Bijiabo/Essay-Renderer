@@ -42,7 +42,7 @@ troposphere==2.0.2
 Unidecode==0.4.21
 urllib3==1.22
 virtualenv==15.1.0
-Werkzeug==0.12
+Werkzeug==0.15.3
 wrapt==1.10.11
 wsgi-request-logger==0.4.6
 zappa==0.45.1
